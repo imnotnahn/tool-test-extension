@@ -1,0 +1,11 @@
+{
+    "name": "test tool",
+    "version": "1.0.0",
+    "description": "test relay",
+    "manifest_version": 3,
+    "author": "CTN",
+    "action":{
+        "default_popup": "index.html",
+        "default_title": ""
+    }
+}
