@@ -4,6 +4,12 @@ var buttonStates = {
   dataButton3: 0,
   dataButton4: 0,
 };
+var coutbutton = {
+  button1: 0,
+  button2: 0,
+  button3: 0,
+  button4: 0
+};
 
 var intervalId;
 var intervalId2;
@@ -30,11 +36,13 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       if (targetButton) {
         buttonStates[targetButtonId] = (buttonStates[targetButtonId] == 1) ? 0 : 1;
         //console.log(`Button ${targetButtonId} state: ${buttonStates[targetButtonId]}`);
-        chrome.runtime.sendMessage({ dataBack: 'zxcvzxcvzxc' }); //upgrade
+        chrome.runtime.sendMessage({ infoButton: targetButtonId,
+                                    dataState: buttonStates[targetButtonId]}); //upgrade
         targetButton.click();
         clearInterval(intervalId2);
         console.log(`Button ${targetButtonId} is pressed`);
         checkButton(targetButton, targetButtonId); // Check immediately after clicking
+        checkAndSaveState(targetButtonId, buttonIds);
       }
       currentIndex = (currentIndex + 1) % buttonIds.length;
     }, timeButtonDelay*1000);
@@ -61,6 +69,22 @@ function checkButton(targetButton, targetButtonId) {
       console.log(buttonStates[targetButtonId]);
     }
   }, 15000);
+}
+
+function checkAndSaveState(infoButton, buttonIds){
+  if (infoButton == buttonIds[0]) {
+    coutbutton.button1++;
+    console.log(coutbutton.button1);
+  } else if (infoButton == buttonIds[1]) {
+    coutbutton.button2++;
+    console.log(coutbutton.button2);
+  } else if (infoButton == buttonIds[2]) {
+    coutbutton.button3++;
+    console.log(coutbutton.button3);
+  } else if (infoButton == buttonIds[3]) {
+    coutbutton.button4++;
+    console.log(coutbutton.button4);
+  }
 }
 
 function stopIntervals() {
