@@ -4,13 +4,14 @@
     "description": "test relay",
     "manifest_version": 3,
     "author": "CTN",
-    "permissions": ["tabs", "<all_urls>"],
-    "browser_action": {
-        "default_title": "idontknow!"
-    },
+    "permissions": ["tabs"],
     "action":{
         "default_popup": "./index.html",
         "default_title": "Auto Test Relay"
+    },
+    "background": {
+      "service_worker": "js/background.js",
+      "type": "module"
     },
     "content_scripts": [
         {
