@@ -11,8 +11,8 @@ var coutbutton = {
   button4: 0
 };
 
-var intervalId;
-var intervalId2;
+var intervalControl;
+var intervalCheckButton;
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   console.log(request.dataButton1);
@@ -30,35 +30,38 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     ];
     var currentIndex = 0;
 
-    intervalId = setInterval(function () {
+    intervalControl = setInterval(function () {
       var targetButtonId = buttonIds[currentIndex];
       var targetButton = document.getElementById(targetButtonId);
       if (targetButton) {
         buttonStates[targetButtonId] = (buttonStates[targetButtonId] == 1) ? 0 : 1;
         //console.log(`Button ${targetButtonId} state: ${buttonStates[targetButtonId]}`);
-        chrome.runtime.sendMessage({ infoButton: targetButtonId,
-                                    dataState: buttonStates[targetButtonId]}); //upgrade
         targetButton.click();
-        clearInterval(intervalId2);
+        clearInterval(intervalCheckButton);
         console.log(`Button ${targetButtonId} is pressed`);
-        checkButton(targetButton, targetButtonId); // Check immediately after clicking
+        checkButton(targetButton, targetButtonId);
         checkAndSaveState(targetButtonId, buttonIds);
+        var JsonButtonData = JSON.stringify(getDataButton(buttonIds));
+        chrome.runtime.sendMessage ({
+          buttondata: JsonButtonData,
+        });
       }
       currentIndex = (currentIndex + 1) % buttonIds.length;
     }, timeButtonDelay*1000);
   } else if (request.stop === 'stoppls') {
+
     stopIntervals();
     console.log('stop loop');
   }
 });
 
 function checkButton(targetButton, targetButtonId) {
-  intervalId2 = setInterval(function () {
+  intervalCheckButton = setInterval(function () {
     if (targetButton.checked == true && buttonStates[targetButtonId] == 1) {
       console.log('true case 1');
       console.log(targetButton.checked);
       console.log(buttonStates[targetButtonId]);
-    } else if(targetButton.checked == false && buttonStates[targetButtonId] == 0){
+    } else if (targetButton.checked == false && buttonStates[targetButtonId] == 0){
       console.log('true case 0');
       console.log(targetButton.checked);
       console.log(buttonStates[targetButtonId]);
@@ -74,10 +77,10 @@ function checkButton(targetButton, targetButtonId) {
 function checkAndSaveState(infoButton, buttonIds){
   if (infoButton == buttonIds[0]) {
     coutbutton.button1++;
-    console.log(coutbutton.button1);
+    console.log(buttonIds[0]);
   } else if (infoButton == buttonIds[1]) {
     coutbutton.button2++;
-    console.log(coutbutton.button2);
+    console.log(buttonIds[1]);
   } else if (infoButton == buttonIds[2]) {
     coutbutton.button3++;
     console.log(coutbutton.button3);
@@ -87,6 +90,30 @@ function checkAndSaveState(infoButton, buttonIds){
   }
 }
 
+function getDataButton(buttonIds){
+  var ButtonData = {
+    buttonId1: buttonIds[0],
+    coutStateButton1: coutbutton.button1,
+    buttonId2: buttonIds[1],
+    coutStateButton2: coutbutton.button2,
+    buttonId3: buttonIds[2],
+    coutStateButton3: coutbutton.button3,
+    buttonId4: buttonIds[3],
+    coutStateButton4: coutbutton.button4,
+  };
+  return ButtonData;
+}
+function checkNetwork(){
+while (true) {
+    console.log('wifi check');
+    window.addEventListener("online", function() {
+        console.log('connected');
+    })
+        window.addEventListener("offline", function() {
+        console.log('disconnected');
+    })
+}
+}
 function stopIntervals() {
-  clearInterval(intervalId);
+  clearInterval(intervalControl);
 }
