@@ -41,17 +41,16 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         console.log(`Button ${targetButtonId} is pressed`);
         checkButton(targetButton, targetButtonId);
         checkAndSaveState(targetButtonId, buttonIds);
-        var JsonButtonData = JSON.stringify(getDataButton(buttonIds));
-        chrome.runtime.sendMessage ({
-          buttondata: JsonButtonData,
-        });
+        if (request.stop == 'stoppls') {
+          var JsonButtonData = JSON.stringify(getDataButton(buttonIds));
+          chrome.runtime.sendMessage ({
+            buttondata: JsonButtonData,
+            exportfile: 'doit'
+          });
+        }
       }
       currentIndex = (currentIndex + 1) % buttonIds.length;
     }, timeButtonDelay*1000);
-  } else if (request.stop === 'stoppls') {
-
-    stopIntervals();
-    console.log('stop loop');
   }
 });
 
@@ -103,17 +102,29 @@ function getDataButton(buttonIds){
   };
   return ButtonData;
 }
+
+function sendToBackGround(){
+  if (request.stop === 'stoppls') {
+    chrome.runtime.sendMessage({});
+    console.log('stop loop');
+  } else {
+    console.log('nothing yet');
+  }
+}
+
+//Pending
 function checkNetwork(){
-while (true) {
-    console.log('wifi check');
-    window.addEventListener("online", function() {
-        console.log('connected');
-    })
-        window.addEventListener("offline", function() {
-        console.log('disconnected');
-    })
+  while (true) {
+      console.log('wifi check');
+      window.addEventListener("online", function() {
+          console.log('connected');
+      })
+          window.addEventListener("offline", function() {
+          console.log('disconnected');
+      })
+  }
 }
-}
+
 function stopIntervals() {
-  clearInterval(intervalControl);
+  setTimeout(function() {stopIntervals(intervalControl); clearInterval(intervalControl); }, 5000);
 }
