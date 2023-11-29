@@ -1,56 +1,60 @@
-var buttonStates = {
+let buttonStates = {
   dataButton1: 0,
   dataButton2: 0,
   dataButton3: 0,
   dataButton4: 0,
 };
-var coutbutton = {
+let coutbutton = {
   button1: 0,
   button2: 0,
   button3: 0,
-  button4: 0
+  button4: 0,
+  coutfalse: 0
 };
 
-var intervalControl;
-var intervalCheckButton;
+let intervalControl;
+let intervalCheckButton;
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-  console.log(request.dataButton1);
-  console.log(request.dataButton2);
-  console.log(request.dataButton3);
-  console.log(request.dataButton4);
+
   const timeButtonDelay = request.dataDelay;
 
   if (request.action === 'controlButton') {
-    var buttonIds = [
+    let buttonIds = [
       request.dataButton1,
       request.dataButton2,
       request.dataButton3,
       request.dataButton4,
     ];
-    var currentIndex = 0;
+    let currentIndex = 0;
+    console.log(request.dataButton1);
+    console.log(request.dataButton2);
+    console.log(request.dataButton3);
+    console.log(request.dataButton4);
 
     intervalControl = setInterval(function () {
-      var targetButtonId = buttonIds[currentIndex];
-      var targetButton = document.getElementById(targetButtonId);
+      const targetButtonId = buttonIds[currentIndex];
+      const targetButton = document.getElementById(targetButtonId);
+      const JsonButtonData = JSON.stringify(getDataButton(buttonIds));
       if (targetButton) {
         buttonStates[targetButtonId] = (buttonStates[targetButtonId] == 1) ? 0 : 1;
         //console.log(`Button ${targetButtonId} state: ${buttonStates[targetButtonId]}`);
         targetButton.click();
-        clearInterval(intervalCheckButton);
         console.log(`Button ${targetButtonId} is pressed`);
+
+        clearInterval(intervalCheckButton);
         checkButton(targetButton, targetButtonId);
         checkAndSaveState(targetButtonId, buttonIds);
-        if (request.stop == 'stoppls') {
-          var JsonButtonData = JSON.stringify(getDataButton(buttonIds));
-          chrome.runtime.sendMessage ({
-            buttondata: JsonButtonData,
-            exportfile: 'doit'
-          });
-        }
+        chrome.runtime.sendMessage ({
+          buttondata: JsonButtonData,
+          exportfile: 'doit'
+        });
       }
       currentIndex = (currentIndex + 1) % buttonIds.length;
     }, timeButtonDelay*1000);
+  } else if (request.resetdata === "resetdata"){
+    console.log('resetdataaaa');
+
   }
 });
 
@@ -66,7 +70,8 @@ function checkButton(targetButton, targetButtonId) {
       console.log(buttonStates[targetButtonId]);
     } else {
       console.log('falseeeeeeee');
-      alert('button bị dội rồiiiiii');
+      coutbutton.coutfalse++;
+      buttonStates[targetButtonId] = (buttonStates[targetButtonId] == 1) ? 0 : 1;
       console.log(targetButton.checked);
       console.log(buttonStates[targetButtonId]);
     }
@@ -90,7 +95,7 @@ function checkAndSaveState(infoButton, buttonIds){
 }
 
 function getDataButton(buttonIds){
-  var ButtonData = {
+  let ButtonData = {
     buttonId1: buttonIds[0],
     coutStateButton1: coutbutton.button1,
     buttonId2: buttonIds[1],
@@ -99,6 +104,7 @@ function getDataButton(buttonIds){
     coutStateButton3: coutbutton.button3,
     buttonId4: buttonIds[3],
     coutStateButton4: coutbutton.button4,
+    coutFalse: coutbutton.coutfalse
   };
   return ButtonData;
 }
