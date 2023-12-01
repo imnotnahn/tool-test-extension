@@ -53,8 +53,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       currentIndex = (currentIndex + 1) % buttonIds.length;
     }, timeButtonDelay*1000);
   } else if (request.resetdata === "resetdata"){
-    console.log('resetdataaaa');
-
+    let arrayData = document.getElementsByClassName('btn btn-sm btn-rounded-success mr-1 ml-1 mr-1');
+    filterData(arrayData);
   }
 });
 
@@ -107,6 +107,21 @@ function getDataButton(buttonIds){
     coutFalse: coutbutton.coutfalse
   };
   return ButtonData;
+}
+
+function filterData(arrayData){
+  let coutsmthing = 0;
+  table = document.getElementsByClassName('table table-hover')[1];
+  console.log(table);
+  //row = table.getElementByTagName('tr');
+  for (let countArray = 0; countArray < arrayData.length; countArray++) {
+    console.log(arrayData[countArray].textContent);
+    if (arrayData[countArray].textContent === "BUTTON4") {
+      arrayData[countArray].style.display = '';
+    } else {
+      arrayData[countArray].style.display = 'none';
+    }
+  }
 }
 
 function sendToBackGround(){
