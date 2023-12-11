@@ -4,21 +4,22 @@
     "description": "test relay",
     "manifest_version": 3,
     "author": "CTN",
-    "permissions": ["tabs"],
+    "permissions": ["tabs","downloads","storage"],
     "minimum_chrome_version": "93",
     "action":{
         "default_popup": "./index.html",
         "default_title": "Auto Test Relay"
     },
     "background": {
-      "service_worker": "js/background.js"
+      "service_worker": "src/background/background.js",
+      "type": "module"
     },
     "content_scripts": [
         {
          "matches": [
            "<all_urls>"
          ],
-         "js": ["js/content.js"]
+         "js": ["src/content/content.js"]
         }
       ]
 
