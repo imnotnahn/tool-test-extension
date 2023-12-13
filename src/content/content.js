@@ -11,26 +11,22 @@ let coutbutton = {
   button4: 0,
   coutfalse: 0
 };
-
+let buttonIds = [];
 let intervalControl;
 let intervalCheckButton;
+let dataIdValue;
+let deviceId = [];
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
   const timeButtonDelay = request.dataDelay;
+  dataIdValue = request.dataId;
+  //console.log(request.dataId);
 
   if (request.action === 'controlButton') {
-    let buttonIds = [
-      request.dataButton1,
-      request.dataButton2,
-      request.dataButton3,
-      request.dataButton4,
-    ];
+    autoClick(buttonIds);
+    console.log(buttonIds);
     let currentIndex = 0;
-    console.log(request.dataButton1);
-    console.log(request.dataButton2);
-    console.log(request.dataButton3);
-    console.log(request.dataButton4);
 
     intervalControl = setInterval(function () {
       const targetButtonId = buttonIds[currentIndex];
@@ -38,7 +34,6 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       const JsonButtonData = JSON.stringify(getDataButton(buttonIds));
       if (targetButton) {
         buttonStates[targetButtonId] = (buttonStates[targetButtonId] == 1) ? 0 : 1;
-        //console.log(`Button ${targetButtonId} state: ${buttonStates[targetButtonId]}`);
         targetButton.click();
         console.log(`Button ${targetButtonId} is pressed`);
 
@@ -47,13 +42,22 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         checkAndSaveState(targetButtonId, buttonIds);
         chrome.runtime.sendMessage ({
           buttondata: JsonButtonData,
-          exportfile: 'doit'
+          exportfile: 'doit',
+          dataIdValueToBackground: dataIdValue
         });
+        saveToStorage(JsonButtonData);
       }
       currentIndex = (currentIndex + 1) % buttonIds.length;
     }, timeButtonDelay*1000);
   } else if (request.resetdata === "resetdata"){
-
+    chrome.storage.local.clear(function() {
+      var error = chrome.runtime.lastError;
+      if (error) {
+          console.error(error);
+      }
+      console.log('clear data');
+      // do something more
+  });
   }
 });
 
@@ -106,6 +110,52 @@ function getDataButton(buttonIds){
     {coutFalse: coutbutton.coutfalse}
   ];
   return ButtonData;
+}
+
+function saveToStorage(JsonButtonData){
+  chrome.storage.local.get(["deviceId"]).then((result) => {
+    let savedData = result.deviceId;
+    if (!Array.isArray(savedData) || !savedData) {
+        savedData = [];
+    }
+    const existingIndex = savedData.findIndex(item => item.nameDevice === dataIdValue);
+
+    if (existingIndex !== -1) {
+        savedData[existingIndex].infoDevice = JsonButtonData;
+    } else {
+        savedData.push({ nameDevice: dataIdValue, infoDevice: JsonButtonData });
+    }
+
+    chrome.storage.local.set({ deviceId: savedData }).then(() => {
+        console.log('value is set');
+        console.log(dataIdValue);
+    });
+  });
+}
+
+function autoClick(buttonIds){
+  const elements = document.querySelectorAll('.text-slate-500');
+  console.log(elements);
+  elements.forEach((element, index) => {
+    if (index !== 1) {       
+        const fidElement = element.querySelector('p:first-child');
+        
+      if (fidElement) {
+        const fidText = fidElement.textContent.trim();
+        const fid = fidText.split(': ')[1];
+        if (hasNumber(fid)) {
+          const newValue = fid + "-value";
+          buttonIds.push(newValue);
+          console.log(newValue);
+        }
+
+      }
+    }
+  });
+}
+
+function hasNumber(str) {
+  return /\d/.test(str);
 }
 
 function sendToBackGround(){

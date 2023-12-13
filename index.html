@@ -7,17 +7,26 @@
 
 </head>
 <body>
+<div class="flex-container" >
+    <button id="buttonRelay" class="tablinks">Test Relay</button>
+    <button id="buttonTimer" class="tablinks">Check Timer</button>
+</div>
 <br>
-<form action="">
-    <input id="button1" type="text" placeholder="ID button1" required>
-    <input id="button2" type="text" placeholder="ID button2" required>
-    <input id="button3" type="text" placeholder="ID button3" required>
-    <input id="button4" type="text" placeholder="ID button4" required>
-    <input id="time" type="text" placeholder="input time (s)" required>
-    <button id="button" class="button2" type="submit">Send Data</button>
-</form>
-<button id="buttonstop" class="button2" type="button">Stop And Export File</button>
-<button id="buttonreset" class="button2" type="button">Get Value</button>
-<script src="js/popup.js"></script>
-</body>
+<div class="tabcontent" id="testRelay">
+    <form action="">
+        <input id="idvalue" type="text" placeholder="ID Device" required>
+        <input id="time" type="text" placeholder="input time (s)" required>
+        <button id="button" class="button2" type="submit">Send Data</button>
+    </form>
+    <button id="buttonreset" class="button2" type="button">Get Value</button>
+</div>
 
+<div class="tabcontent" id="testTimer">
+    <form action="">
+        <input id="idvaluetobackground" type="text" placeholder="ID Device" required>
+        <button id="buttonstop" class="button2" type="submit">Stop And Export File</button>
+    </form>
+</div>
+<script src="js/popup.js"></script>
+<script src="js/index.js"></script>
+</body>
