@@ -14,13 +14,12 @@ let coutbutton = {
 let buttonIds = [];
 let intervalControl;
 let intervalCheckButton;
-let dataIdValue;
 let deviceId = [];
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
   const timeButtonDelay = request.dataDelay;
-  dataIdValue = request.dataId;
+  const dataIdValue = request.dataId;
   //console.log(request.dataId);
 
   if (request.action === 'controlButton') {
@@ -35,6 +34,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       if (targetButton) {
         buttonStates[targetButtonId] = (buttonStates[targetButtonId] == 1) ? 0 : 1;
         targetButton.click();
+        saveToStorage(dataIdValue, JsonButtonData);
         console.log(`Button ${targetButtonId} is pressed`);
 
         clearInterval(intervalCheckButton);
@@ -45,7 +45,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
           exportfile: 'doit',
           dataIdValueToBackground: dataIdValue
         });
-        saveToStorage(JsonButtonData);
+        sendResponse({test: 'nothinggggggg'});
       }
       currentIndex = (currentIndex + 1) % buttonIds.length;
     }, timeButtonDelay*1000);
@@ -56,8 +56,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
           console.error(error);
       }
       console.log('clear data');
-      // do something more
-  });
+    });
   }
 });
 
@@ -112,7 +111,7 @@ function getDataButton(buttonIds){
   return ButtonData;
 }
 
-function saveToStorage(JsonButtonData){
+function saveToStorage(dataIdValue, JsonButtonData){
   chrome.storage.local.get(["deviceId"]).then((result) => {
     let savedData = result.deviceId;
     if (!Array.isArray(savedData) || !savedData) {
@@ -121,6 +120,7 @@ function saveToStorage(JsonButtonData){
     const existingIndex = savedData.findIndex(item => item.nameDevice === dataIdValue);
 
     if (existingIndex !== -1) {
+        savedData[existingIndex].nameDevice = dataIdValue;
         savedData[existingIndex].infoDevice = JsonButtonData;
     } else {
         savedData.push({ nameDevice: dataIdValue, infoDevice: JsonButtonData });
@@ -135,11 +135,9 @@ function saveToStorage(JsonButtonData){
 
 function autoClick(buttonIds){
   const elements = document.querySelectorAll('.text-slate-500');
-  console.log(elements);
   elements.forEach((element, index) => {
     if (index !== 1) {       
         const fidElement = element.querySelector('p:first-child');
-        
       if (fidElement) {
         const fidText = fidElement.textContent.trim();
         const fid = fidText.split(': ')[1];
@@ -148,7 +146,6 @@ function autoClick(buttonIds){
           buttonIds.push(newValue);
           console.log(newValue);
         }
-
       }
     }
   });

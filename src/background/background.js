@@ -1,11 +1,9 @@
 let data;
 let jsonData;
-let dataIdValueOfBackground;
+
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-    data = request.buttondata;
-    dataIdValueOfBackground = request.dataIdValueToBackground.toString();
-    jsonData = JSON.parse(data);
+
 });
 
 chrome.runtime.onConnect.addListener(function (port) {
@@ -22,6 +20,8 @@ chrome.runtime.onConnect.addListener(function (port) {
                         exportToExcel(deviceId[storedId].infoDevice);
                         console.log(deviceId[storedId].infoDevice);
                         break; 
+                    } else {
+                        console.log('Invalid ID');
                     }
                 }
             });
@@ -33,7 +33,6 @@ chrome.runtime.onConnect.addListener(function (port) {
 
 function exportToExcel(info) {
     const jsonData = [{ info }];
-    
     const csvContent = "data:text/csv;charset=utf-8," + convertToCSV(jsonData);
     const encodedUri = encodeURI(csvContent);
     chrome.downloads.download({
@@ -44,7 +43,13 @@ function exportToExcel(info) {
 }
 
 function convertToCSV(objArray) {
-    const array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray;
+    console.log(objArray);
+    const infoOfArray = objArray[0].info;
+    console.log(infoOfArray);
+    const isJson = JSON.parse(infoOfArray);
+    console.log(isJson);
+    const array = typeof objArray !== 'object' ? JSON.parse(isJson) : isJson;
+    console.log(array);
     let str = '';
 
     for (let i = 0; i < array.length; i++) {

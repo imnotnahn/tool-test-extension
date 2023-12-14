@@ -9,22 +9,24 @@
 <body>
 <div class="flex-container" >
     <button id="buttonRelay" class="tablinks">Test Relay</button>
-    <button id="buttonTimer" class="tablinks">Check Timer</button>
+    <button id="buttonTimer" class="tablinks">Export File</button>
 </div>
 <br>
 <div class="tabcontent" id="testRelay">
     <form action="">
         <input id="idvalue" type="text" placeholder="ID Device" required>
         <input id="time" type="text" placeholder="input time (s)" required>
+    <div class="flex-container-right">
         <button id="button" class="button2" type="submit">Send Data</button>
     </form>
-    <button id="buttonreset" class="button2" type="button">Get Value</button>
+        <button id="buttonreset" class="button" type="button">Clear Data</button>
+    </div>
 </div>
 
 <div class="tabcontent" id="testTimer">
     <form action="">
         <input id="idvaluetobackground" type="text" placeholder="ID Device" required>
-        <button id="buttonstop" class="button2" type="submit">Stop And Export File</button>
+        <button id="buttonstop" class="button2" type="submit">Download</button>
     </form>
 </div>
 <script src="js/popup.js"></script>
