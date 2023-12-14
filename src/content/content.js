@@ -40,11 +40,6 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         clearInterval(intervalCheckButton);
         checkButton(targetButton, targetButtonId);
         checkAndSaveState(targetButtonId, buttonIds);
-        chrome.runtime.sendMessage ({
-          buttondata: JsonButtonData,
-          exportfile: 'doit',
-          dataIdValueToBackground: dataIdValue
-        });
         sendResponse({test: 'nothinggggggg'});
       }
       currentIndex = (currentIndex + 1) % buttonIds.length;
