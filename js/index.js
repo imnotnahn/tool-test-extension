@@ -8,8 +8,21 @@ document.getElementById("buttonTimer").addEventListener("click", function(event)
 });
 
 chrome.storage.local.get(["deviceId"]).then((result) => {
-  const deviceId = result.deviceId;
-  updateInfo.innerHTML = deviceId[0].infoDevice;
+  const deviceIds = result.deviceId;
+  let fullInfo = '';
+  if(deviceIds){
+    deviceIds.forEach((deviceId) => {
+      const jsonArray = JSON.parse(deviceId.infoDevice);
+      const mapArray = jsonArray.map((item)=>{
+        return `${item.nameButton}: ${item.stateButton}<br>`;
+      });
+      fullInfo += mapArray.join(' ');
+    });
+  } else {
+    console.log('no infomation');
+  }
+
+  updateInfo.innerHTML = fullInfo;
 });
 
 function openTab(event, nameTab) {

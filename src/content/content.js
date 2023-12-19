@@ -93,14 +93,14 @@ function checkAndSaveState(infoButton, buttonIds){
 
 function getDataButton(buttonIds){
   let ButtonData = [
-    {buttonId1: buttonIds[0],
-    coutStateButton1: coutbutton.button1,
-    buttonId2: buttonIds[1],
-    coutStateButton2: coutbutton.button2,
-    buttonId3: buttonIds[2],
-    coutStateButton3: coutbutton.button3,
-    buttonId4: buttonIds[3],
-    coutStateButton4: coutbutton.button4},
+    {nameButton: buttonIds[0],
+    stateButton: coutbutton.button1},
+    {nameButton: buttonIds[1],
+    stateButton: coutbutton.button2},
+    {nameButton: buttonIds[2],
+    stateButton: coutbutton.button3},
+    {nameButton: buttonIds[3],
+    stateButton: coutbutton.button4},
     {coutFalse: coutbutton.coutfalse}
   ];
   return ButtonData;

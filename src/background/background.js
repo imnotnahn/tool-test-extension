@@ -25,6 +25,7 @@ chrome.runtime.onConnect.addListener(function (port) {
 
 function exportToExcel(info) {
     const jsonData = [{ info }];
+    console.log(jsonData);
     const csvContent = "data:text/csv;charset=utf-8," + convertToCSV(jsonData);
     const encodedUri = encodeURI(csvContent);
     chrome.downloads.download({
