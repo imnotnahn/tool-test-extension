@@ -30,7 +30,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     intervalControl = setInterval(function () {
       const targetButtonId = buttonIds[currentIndex];
       const targetButton = document.getElementById(targetButtonId);
-      const JsonButtonData = JSON.stringify(getDataButton(buttonIds));
+      const JsonButtonData = JSON.stringify(getDataButton(dataIdValue, buttonIds));
       if (targetButton) {
         buttonStates[targetButtonId] = (buttonStates[targetButtonId] == 1) ? 0 : 1;
         targetButton.click();
@@ -52,6 +52,12 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       }
       console.log('clear data');
     });
+  } else if (request.getbuttondata === "getdatatimer") {
+    console.log('getdatatimer');
+    getDataTimer();
+  } else if (request.checkdatabutton === "checkdatabutton") {
+    console.log('checkdatabutton');
+    checkDataTimer();
   }
 });
 
@@ -91,7 +97,7 @@ function checkAndSaveState(infoButton, buttonIds){
   }
 }
 
-function getDataButton(buttonIds){
+function getDataButton(dataIdValue, buttonIds){
   let ButtonData = [
     {nameButton: buttonIds[0],
     stateButton: coutbutton.button1},
@@ -101,7 +107,8 @@ function getDataButton(buttonIds){
     stateButton: coutbutton.button3},
     {nameButton: buttonIds[3],
     stateButton: coutbutton.button4},
-    {coutFalse: coutbutton.coutfalse}
+    {nameButton: dataIdValue,
+    stateButton: coutbutton.coutfalse},
   ];
   return ButtonData;
 }
@@ -148,6 +155,37 @@ function autoClick(buttonIds){
 
 function hasNumber(str) {
   return /\d/.test(str);
+}
+
+function getDataTimer(){
+  const getinfo = document.querySelectorAll('.flex-col');
+  getinfo.forEach((dataelement, index) => {
+    const fidElement = dataelement.querySelector('a.font-medium');
+    if (fidElement == null) {
+      console.log('');
+    } else {
+      const textElement = fidElement.textContent;
+      console.log(textElement);
+    }
+  })
+}
+
+function checkDataTimer(){
+  const getTable = document.getElementsByClassName('table');
+  const bodyTable = getTable[6].querySelector('tbody');
+  const rowData = bodyTable.querySelectorAll('tr');
+  const rowLength = getTable[6].rows.length;
+  rowData.forEach((row) => {
+    const dataRowSecond = row.querySelector('td:nth-child(2)');
+    const dataRowThird = row.querySelector('td:nth-child(3)');
+    console.log(dataRowSecond);
+    console.log(dataRowThird);
+  })
+  //readTable(bodyTable);
+}
+
+function readTable(bodyTable){
+
 }
 
 function sendToBackGround(){

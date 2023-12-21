@@ -3,6 +3,8 @@
     let controlButton = document.getElementById('button');
     let stopButton = document.getElementById('buttonstop');
     let resetButton = document.getElementById('buttonreset');
+    let getButtonData = document.getElementById('buttonGetData');
+    let checkDataButton = document.getElementById('buttonCheckData');
     let idValue = document.getElementById('idvalue');
     controlButton.addEventListener('click', function () {
       chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
@@ -21,6 +23,20 @@
       chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
         chrome.tabs.sendMessage(tabs[0].id,{
           resetdata: "resetdata"
+        })
+      })
+    })
+    getButtonData.addEventListener('click', function(){
+      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        chrome.tabs.sendMessage(tabs[0].id,{
+          getbuttondata: "getdatatimer"
+        })
+      })
+    })
+    checkDataButton.addEventListener('click', function(){
+      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        chrome.tabs.sendMessage(tabs[0].id,{
+          checkdatabutton: "checkdatabutton"
         })
       })
     })

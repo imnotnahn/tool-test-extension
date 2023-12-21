@@ -2,9 +2,11 @@ const updateInfo = document.getElementById('infodevices');
 document.getElementById("buttonRelay").addEventListener("click", function(event) {
   openTab(event, 'testRelay');
 });
-
 document.getElementById("buttonTimer").addEventListener("click", function(event) {
   openTab(event, 'testTimer');
+});
+document.getElementById("buttonCheckTimer").addEventListener("click", function(event) {
+  openTab(event, 'checkTimer');
 });
 
 chrome.storage.local.get(["deviceId"]).then((result) => {
