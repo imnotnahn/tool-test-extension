@@ -12,6 +12,7 @@ let coutbutton = {
   coutfalse: 0
 };
 let buttonIds = [];
+let boxData = [];
 let intervalControl;
 let intervalCheckButton;
 let deviceId = [];
@@ -107,7 +108,7 @@ function getDataButton(dataIdValue, buttonIds){
     stateButton: coutbutton.button3},
     {nameButton: buttonIds[3],
     stateButton: coutbutton.button4},
-    {nameButton: dataIdValue,
+    {nameButton: dataIdValue+' false',
     stateButton: coutbutton.coutfalse},
   ];
   return ButtonData;
@@ -158,34 +159,54 @@ function hasNumber(str) {
 }
 
 function getDataTimer(){
-  const getinfo = document.querySelectorAll('.flex-col');
-  getinfo.forEach((dataelement, index) => {
-    const fidElement = dataelement.querySelector('a.font-medium');
-    if (fidElement == null) {
-      console.log('');
-    } else {
-      const textElement = fidElement.textContent;
-      console.log(textElement);
-    }
+  const rawIntro = Array.from(document.getElementsByClassName('intro-y col-span-12 lg:col-span-6'));
+  rawIntro.forEach((dataElement, index) => {
+    const boxElement = dataElement.querySelector('div:nth-child(1)');
+    const labelElement = boxElement.querySelector('a.font-medium');
+    const flexElement = boxElement.querySelectorAll('.flex.items-center.mb-5');
+    flexElement.forEach((flexElement, index) => {
+      const labelTimer = flexElement.querySelector('p.font-medium');
+      const timeElements = flexElement.querySelectorAll('.btn.btn-sm.btn-rounded-success');
+      console.log(timeElements);
+      console.log(timeElements[0].textContent);
+      console.log(timeElements[1].textContent);
+      console.log(labelTimer.textContent);
+    })
+    const label = labelElement.textContent.trim();
+    console.log(label);
+    /*
+    Data Structure:
+    label: nameButton
+    labelTimer: labelTimer
+    starttime: timeElement[0]
+    endtime: timeElement[1] 
+    */
   })
 }
 
 function checkDataTimer(){
   const getTable = document.getElementsByClassName('table');
   const bodyTable = getTable[6].querySelector('tbody');
-  const rowData = bodyTable.querySelectorAll('tr');
   const rowLength = getTable[6].rows.length;
-  rowData.forEach((row) => {
+  const rowData = bodyTable.querySelectorAll('tr');
+
+  rowData.forEach((row, index) => {
+    console.log(index);
+    const dataRowFirst = row.querySelector('td:nth-child(1)');
     const dataRowSecond = row.querySelector('td:nth-child(2)');
+    const spanRowSecond = dataRowSecond.querySelectorAll('span');
     const dataRowThird = row.querySelector('td:nth-child(3)');
+    spanRowSecond.forEach((dataElement) => {
+      const spanData = dataElement.textContent;
+      console.log(spanData);
+    })
     console.log(dataRowSecond);
-    console.log(dataRowThird);
   })
   //readTable(bodyTable);
 }
 
-function readTable(bodyTable){
-
+function saveDataTimer(){
+  chrome.storage.local.set({dataTimer: 'data'}).then(()=>{})
 }
 
 function sendToBackGround(){
